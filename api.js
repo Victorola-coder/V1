@@ -68,6 +68,7 @@ loginbtn.onclick = async() => {
 
 /* Upload files */
 const uploadbtn = document.getElementById("upload"); //upload button;
+const description = document.getElementById("description").value //Description or links if any
 uploadbtn.onclick = async() => {
     const uploads = Array.from(document.querySelectorAll("[type=file")).map(a => a.files) || Array.from(document.getElementById("file").files) //extract all uploads
     const day = document.getElementById("day").value;
@@ -94,5 +95,23 @@ uploadbtn.onclick = async() => {
             })
         })
         //promise can be removed to upload all items together instead of one by one;
+    }
+    if(description){
+        const file = new Blob([description], {type: "text/plain"});
+        await new Promise((res,_) => {
+            const uploadTask = storage.uploadBytesResumable(storage.ref(storageRef, `${userId}/day-${day}/desc`), file, {type: file.type});
+            uploadTask.on('state_changed', snapshot => {
+                const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100); //calculate progress
+                //display progress
+                progress[index].value = status;
+                span[index].value = status + '%/';
+            }, error => {
+                //indicate error;
+                throw error;
+            }, () => {
+                //upload complete
+                res(true);
+            })
+        })
     }
 }
