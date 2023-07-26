@@ -72,7 +72,12 @@
             inp.type = "file";
             inp.className = "hidden";
             inp.click();
-            inp.onchange = () => {
+            inp.onchange = (e) => {
+                if(inp.files[0].size > 1024 * 1024){
+                    alert("File limit is 1MB");
+                    inp.parentElement.removeChild(inp);
+                    return false;
+                }
                 const files = Array.from(document.querySelectorAll('[type="file"]')).map(a => a.files[0]);
                 list.render(files.map((a,b) => 
                         <div key={b} className="flex items-start gap-2 w-full">
