@@ -44,7 +44,10 @@
         <button id="upbtn" class="w-full py-1 rounded-lg text-white font-semibold bg-gray-700 text-xl">Upload</button>
     </main>
     <script type="text/babel">
-        if(document.cookie.includes("uid")) {
+        if(!document.cookie.includes("uid")) {
+            Array.from(document.querySelectorAll("button, textarea, input")).forEach(a => a.setAttribute("disabled", true));
+            document.querySelector("main").classList.add("opacity-50");
+        } else {
             const header = document.querySelector("header");
             header.classList.remove("flex");
             header.classList.add("hidden");

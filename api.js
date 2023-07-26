@@ -80,10 +80,6 @@ loginbtn.onclick = async() => {
 
 /* Upload files */
 const uploadbtn = ft("upbtn"); //upload button;
-if(uploadbtn.tagName == "BUTTON" && !ck.get("uid")){
-    location.href = '/signup.html';
-    throw new Error("User is not signed in!");
-}
 const description = ft("description").value //Description or links if any
 uploadbtn.onclick = async() => {
     const uploads = Array.from(document.querySelectorAll("[type=file")).map(a => a.files[0]) //extract all uploads
