@@ -22,10 +22,17 @@
         ::-webkit-progress-bar {
             @apply bg-blue-600;
         }
+        header a {
+            @apply text-white py-1 px-4 rounded-lg border-[1px] hover:bg-white hover:text-black;
+        }
     </style>
     <script type="module" src="api.js"></script>
 </head>
 <body class="flex justify-center items-center h-full">
+    <header class="flex gap-4 justify-end items-center fixed top-0 left-0 right-0 pr-4 py-2">
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+    </header>
     <main class="w-1/2 sm:w-[90%] bg-white rounded-lg px-4 py-2 flex flex-col gap-4">
         <div class="text-xl">
             <span>File Upload</span>
@@ -37,6 +44,11 @@
         <button id="upbtn" class="w-full py-1 rounded-lg text-white font-semibold bg-gray-700 text-xl">Upload</button>
     </main>
     <script type="text/babel">
+        if(document.cookie.includes("uid")) {
+            const header = document.querySelector("header");
+            header.classList.remove("flex");
+            header.classList.add("hidden");
+        }
         function getChallengeDay() {
             const oneDayMilliseconds = 24 * 60 * 60 * 1000;
             const start = new Date("2023-07-17");
