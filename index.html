@@ -1,11 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1 minimum-scale=1, user-scalable=no">
+    <title>File Uploads</title>
+    <script src="tailwindcss.js"></script>
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="google-font.css">
+    <script src="babel.min.js"></script>
+    <script src="react.production.min.js"></script>
+    <script src="react-dom.production.min.js"></script>
+    <style type="text/tailwindcss">
+        body {
+            background-image: url('bg.svg');
+            background-color: hsl(234, 17%, 12%);
+            font-family: circula;
+        }
+        ::-moz-progress-bar {
+            @apply bg-blue-600;
+        }
+        ::-webkit-progress-bar {
+            @apply bg-blue-600;
+        }
+    </style>
+    <script type="module" src="api.js"></script>
 </head>
-<body>
-    
+<body class="flex justify-center items-center h-full">
+    <main class="w-1/2 sm:w-[90%] bg-white rounded-lg px-4 py-2 flex flex-col gap-4">
+        <div class="text-xl">
+            <span>File Upload</span>
+            <div class="float-right"> Day: <input type="text" id="day" class="text-blue-950 focus:outline-none w-6" maxlength="2"/></div>
+        </div>
+        <textarea placeholder="Description" id="description" class="focus:outline-none border-solid border-[1px] rounded-lg p-4"></textarea>
+        <div class="flex items-start flex-col gap-4" id="list"></div>
+        <button id="adbtn" class="w-full py-1 rounded-lg text-white font-semibold bg-gray-700 text-xl">Add File</button>
+        <button id="upbtn" class="w-full py-1 rounded-lg text-white font-semibold bg-gray-700 text-xl">Upload</button>
+    </main>
+    <script type="text/babel">
+        function getChallengeDay() {
+            const oneDayMilliseconds = 24 * 60 * 60 * 1000;
+            const start = new Date("2023-07-17");
+            const current = new Date();
+            const differenceInDays = Math.floor((current - start) / oneDayMilliseconds);
+            const challengeDay = differenceInDays + 1;
+            return challengeDay;
+        }
+        document.getElementById("day").value = getChallengeDay();
+        const list = ReactDOM.createRoot(document.getElementById("list"));
+        const adbtn = document.getElementById("adbtn");
+        function cvr(x){
+            const lv1 = x >= 1024 ? x /= 1024 : undefined;
+            const lv2 = x >= 1024 ? x /= 1024 : undefined;
+            const lv3 = x >= 1024 ? x /= 1024 : undefined;
+            return `${Math.round(x)}${lv3 ? "GB" : lv2 ? "MB" : lv1? "KB" : " bytes"}`;
+        }
+        list.render('');
+        adbtn.onclick = () => {
+            const inp = document.body.appendChild(document.createElement("input"));
+            inp.type = "file";
+            inp.className = "hidden";
+            inp.click();
+            inp.onchange = () => {
+                const files = Array.from(document.querySelectorAll('[type="file"]')).map(a => a.files[0]);
+                list.render(files.map((a,b) => 
+                        <div key={b} className="flex items-start gap-2 w-full">
+                            <span className="symbol text-6xl opacity-80">upload_file</span>
+                            <div className="flex flex-col gap-1 w-full">
+                                <div className="w-full">
+                                    <span>{a.name.length > 10 ? a.name.slice(0,10) + '...' : a.name}</span>
+                                    <span className="float-right">{cvr(a.size)}</span>
+                                </div>
+                                <progress max="100" min="0" value="0" className="h-2 rounded-md appearance-none bg-[#222]"></progress>
+                                <span className="percent">0% done</span>
+                            </div>
+                        </div>
+                ))
+            }
+        }
+    </script>
 </body>
 </html>

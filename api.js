@@ -15,7 +15,6 @@ const err = ft("err");
 const form = ft("form");
 const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 signbtn.onclick = async() => {
-    console.log("Y");
     //validate form
     if(!regex.test(form.email.value)){
         err.innerText = "Invalid Email";
@@ -23,7 +22,7 @@ signbtn.onclick = async() => {
         return;
     }
     //generate userid
-    const xl = (await database.get(database.ref(db, '/uid/'))).val() //get existing ID's from database
+    const xl = (await database.get(database.ref(db, '/uid/'))).val() || {} //get existing ID's from database
     const xm = Object.values(xl).map(a => a.email);
     if(xm.some(a => a.toLowerCase() == form.email.value.toLowerCase())){
         err.innerHTML = "Email already exists <br> <a style=\"color:white\" href=\"login.html\">Sign In?</a>"
@@ -58,8 +57,7 @@ loginbtn.onclick = async() => {
         form.email.onclick = () => err.innerText = '';
         return;
     }
-    const uid = (await database.get(database.ref(db, '/uid/'))).val();
-    console.log(uid);
+    const uid = (await database.get(database.ref(db, '/uid/'))).val() || {};
     let userId;
     for(const id in uid){
         const data = uid[id];
@@ -68,7 +66,6 @@ loginbtn.onclick = async() => {
             break;
         }
     }
-    console.log(Boolean())
     if(userId){
         //return to homepage
         ck.set("uid", userId);
@@ -82,16 +79,16 @@ loginbtn.onclick = async() => {
 }
 
 /* Upload files */
-const uploadbtn = ft("upload"); //upload button;
+const uploadbtn = ft("upbtn"); //upload button;
 const description = ft("description").value //Description or links if any
 uploadbtn.onclick = async() => {
-    const uploads = Array.from(document.querySelectorAll("[type=file")).map(a => a.files) || Array.from(document.getElementById("file").files) //extract all uploads
+    const uploads = Array.from(document.querySelectorAll("[type=file")).map(a => a.files[0]) //extract all uploads
     const day = document.getElementById("day").value;
     //get all progress bars
     const progress = document.querySelectorAll("progress"); //all progress elements to monitor uploads
     const span = document.getElementsByClassName("percent"); //elements to show percentage of upload progress;
     //upload each file accordingly
-    const userId = ck.get("userId");
+    const userId = ck.get("uid");
     for(const file of uploads){
         const index = uploads.indexOf(file);
         await new Promise((res,_) => {
@@ -100,7 +97,7 @@ uploadbtn.onclick = async() => {
                 const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100); //calculate progress
                 //display progress
                 progress[index].value = status;
-                span[index].value = status + '%/';
+                span[index].value = status + '% done';
             }, error => {
                 //indicate error;
                 throw error;
@@ -117,10 +114,7 @@ uploadbtn.onclick = async() => {
             const uploadTask = storage.uploadBytesResumable(storage.ref(storageRef, `${userId}/day-${day}/desc`), file, {type: file.type});
             uploadTask.on('state_changed', snapshot => {
                 const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100); //calculate progress
-                //display progress
-                //span and progress elements for description
-                progress[index].value = status;
-                span[index].value = status + '%/';
+                ft("description").value = "Finalizing " + status + "%";
             }, error => {
                 //indicate error;
                 throw error;
