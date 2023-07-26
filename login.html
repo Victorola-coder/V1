@@ -6,21 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="login.css">
+    <script type="module" src="api.js"></script>
 </head>
 
 <body>
     <div class="login-box">
         <p>Login</p>
-        <form>
+        <h5 id="err" style="font-weight: normal; color: white; text-align: center;"></h5>
+        <form id="form">
             <div class="user-box">
-                <input required="" name="" type="text">
+                <input required="" name="email" type="text">
                 <label>Email</label>
             </div>
             <div class="user-box">
-                <input required="" name="" type="password">
+                <input required="" name="pwd" type="password">
                 <label>Password</label>
             </div>
-            <a href="#">
+            <a href="#" id="lgn">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -28,7 +30,7 @@
                 Submit
             </a>
         </form>
-        <p>Dont have an account? <a href="./signup.html" class="a2">Sign in!</a></p>
+        <p>Dont have an account? <a href="./signup.html" class="a2">Sign Up!</a></p>
     </div>
 </body>
 
