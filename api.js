@@ -78,6 +78,18 @@ uploadbtn.onclick = async() => {
     const progress = document.querySelectorAll("progress");
     const span = document.getElementsByClassName("percent");
     const userId = ck.get("uid");
+    if(description){
+        const file = new Blob([description], {type: "text/plain"});
+        await new Promise((res,_) => {
+            const uploadTask = storage.uploadBytesResumable(storage.ref(storageRef, `${userId}/day-${day}/desc`), file, {type: file.type});
+            uploadTask.on('state_changed', snapshot => {
+                const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100);
+                ft("description").value = "Uploading description " + status + "%";
+            }, error => {
+                throw error;
+            }, res)
+        })
+    }
     for(const file of uploads){
         const index = uploads.indexOf(file);
         await new Promise((res,_) => {
@@ -86,18 +98,6 @@ uploadbtn.onclick = async() => {
                 const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100);
                 progress[index].value = status;
                 span[index].innerText = status + '% done';
-            }, error => {
-                throw error;
-            }, res)
-        })
-    }
-    if(description){
-        const file = new Blob([description], {type: "text/plain"});
-        await new Promise((res,_) => {
-            const uploadTask = storage.uploadBytesResumable(storage.ref(storageRef, `${userId}/day-${day}/desc`), file, {type: file.type});
-            uploadTask.on('state_changed', snapshot => {
-                const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100);
-                ft("description").value = "Finalizing " + status + "%";
             }, error => {
                 throw error;
             }, res)
