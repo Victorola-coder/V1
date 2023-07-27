@@ -85,7 +85,7 @@ uploadbtn.onclick = async() => {
             uploadTask.on('state_changed', snapshot => {
                 const status = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes * 100);
                 progress[index].value = status;
-                span[index].value = status + '% done';
+                span[index].innerText = status + '% done';
             }, error => {
                 throw error;
             }, res)
