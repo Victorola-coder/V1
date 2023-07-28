@@ -73,8 +73,8 @@ loginbtn.onclick = async() => {
 }
 
 const uploadbtn = ft("upbtn");
-const description = ft("description").value;
 uploadbtn.onclick = async() => {
+    const description = ft("description").value;
     const uploads = Array.from(document.querySelectorAll("[type=file")).map(a => a.files[0]);
     const day = document.getElementById("day").value;
     const progress = document.querySelectorAll("progress");
