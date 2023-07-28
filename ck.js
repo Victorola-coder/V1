@@ -19,6 +19,7 @@ export default {
             cookie += `expires=${expires.toUTCString()};path=/`;
       }
       document.cookie = cookie;
+      return this.get(name);
     },
     delete: function(name) {
       const expires = new Date();

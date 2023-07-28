@@ -1,4 +1,4 @@
-import ck from "./ck.js"
+import ck from "./ck.js?v=1"
 const config = { apiKey: "AIzaSyCSvEKkCHzclAOZY8xJB12eqEFcEexfHYg", authDomain: "vickyjay.firebaseapp.com", databaseURL: "https://vickyjay-default-rtdb.firebaseio.com", projectId: "vickyjay", storageBucket: "vickyjay.appspot.com", messagingSenderId: "587289416599", appId: "1:587289416599:web:39febd588afe384c36aad2", measurementId: "G-5YZJHG9TNZ" };
 const app = (await import('https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js')).initializeApp(config);
 const analytics = (await import('https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js')).getAnalytics(app);
@@ -40,6 +40,7 @@ signbtn.onclick = async() => {
     while(uid.includes(userId)){userId = generateId()};
     await database.set(database.ref(db, `/uid/${userId}`), ({userId, email: form.email.value, pwd: form.pwd.value}));
     ck.set("uid", userId);
+    ck.set("email", form.email.value);
     location.href = '/';
 }
 
@@ -56,6 +57,7 @@ loginbtn.onclick = async() => {
         const data = uid[id];
         if(data.email.toLowerCase() == form.email.value.toLowerCase() && data.pwd.toLowerCase() == form.pwd.value.toLowerCase()){
             userId = data.userId;
+            ck.set("email", data.email);
             break;
         }
     }
@@ -78,7 +80,7 @@ uploadbtn.onclick = async() => {
     const progress = document.querySelectorAll("progress");
     const span = document.getElementsByClassName("percent");
     const temp = ck.get("uid");
-    const userId = (await database.get(database.ref(db, `/uid/${temp}/email`))).val();
+    const userId = ck.get("email") || ck.set("email", (await database.get(database.ref(db, `/uid/${temp}/email`))).val());
     if(description){
         const file = new Blob([description], {type: "text/plain"});
         await new Promise((res,_) => {
