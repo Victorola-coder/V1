@@ -77,7 +77,8 @@ uploadbtn.onclick = async() => {
     const day = document.getElementById("day").value;
     const progress = document.querySelectorAll("progress");
     const span = document.getElementsByClassName("percent");
-    const userId = ck.get("uid");
+    const temp = ck.get("uid");
+    const userId = (await database.get(database.ref(db, `/uid/${temp}/email`))).val();
     if(description){
         const file = new Blob([description], {type: "text/plain"});
         await new Promise((res,_) => {
